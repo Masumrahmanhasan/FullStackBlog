@@ -26,3 +26,6 @@ Route::delete('delete-tag/{id}', "TagController@deleteTag");
 
 // Category
 Route::post('upload', 'CategoryController@upload');
+Route::post('delete-image', 'CategoryController@deleteImage');
+Route::post('add-category', 'CategoryController@addCategory');
+Route::get('get-categories', 'CategoryController@getCategories');

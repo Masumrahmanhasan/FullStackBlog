@@ -2055,9 +2055,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      categories: [],
       data: {
         categoryName: '',
         iconImage: ''
@@ -2069,6 +2080,108 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   methods: {
+    addCategory: function addCategory() {
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _this.$Loading.start();
+
+                _this.isAdding = true;
+                _context.next = 4;
+                return _this.callApi('post', 'api/add-category', _this.data);
+
+              case 4:
+                res = _context.sent;
+
+                if (res.status === 201) {
+                  _this.$Loading.finish();
+
+                  _this.isAdding = false;
+
+                  _this.$emit('afterCreate');
+
+                  _this.success('Category has been added successfully');
+
+                  _this.closeModal();
+                } else {
+                  _this.$Loading.error();
+
+                  _this.isAdding = false;
+
+                  if (res.data.errors.categoryName) {
+                    _this.error(res.data.errors.categoryName[0]);
+                  }
+
+                  if (res.data.errors.iconImage) {
+                    _this.error(res.data.errors.iconImage[0]);
+                  }
+                }
+
+              case 6:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    fetchCategory: function fetchCategory() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return _this2.callApi('get', 'api/get-categories');
+
+              case 2:
+                res = _context2.sent;
+
+                if (res.status === 200) {
+                  _this2.categories = res.data;
+                } else {
+                  _this2.swr();
+                }
+
+              case 4:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    editCategory: function editCategory(category) {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _this3.editmode = true;
+                _this3.data = {
+                  categoryName: category.categoryName,
+                  iconImage: category.iconImage
+                };
+                _this3.addModal = true;
+
+              case 3:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
     closeModal: function closeModal() {
       this.addModal = false;
     },
@@ -2081,27 +2194,56 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         desc: "".concat(file.errors.file.length ? file.errors.file[0] : 'Something went wrong!')
       });
     },
-    handleList: function handleList(res, file) {
-      this.data.iconImage = '';
-      console.log(res);
+    handleList: function handleList() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+        var image, res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                image = _this4.data.iconImage;
+                _this4.data.iconImage = '';
+                _context4.next = 4;
+                return _this4.callApi('post', 'api/delete-image', {
+                  imageName: image
+                });
+
+              case 4:
+                res = _context4.sent;
+
+              case 5:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
     }
   },
   created: function created() {
-    var _this = this;
+    var _this5 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context5.prev = _context5.next) {
             case 0:
-              _this.token = window.Laravel.csrfToken;
+              _this5.token = window.Laravel.csrfToken;
 
-            case 1:
+              _this5.fetchCategory();
+
+              _this5.$on('afterCreate', function () {
+                _this5.fetchCategory();
+              });
+
+            case 3:
             case "end":
-              return _context.stop();
+              return _context5.stop();
           }
         }
-      }, _callee);
+      }, _callee5);
     }))();
   }
 });
@@ -85029,7 +85171,71 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _vm._m(0)
+              _c("div", { staticClass: "_overflow _table_div" }, [
+                _c(
+                  "table",
+                  { staticClass: "_table" },
+                  [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _vm._l(_vm.categories, function(category, index) {
+                      return _vm.categories.length
+                        ? _c("tr", { key: index }, [
+                            _c("td", [_vm._v(_vm._s(index + 1))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(category.categoryName))]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "table_image" }, [
+                              _c("img", {
+                                attrs: {
+                                  src: "storage/uploads/" + category.iconImage,
+                                  width: "40",
+                                  height: "50",
+                                  alt: ""
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(category.created_at))]),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              [
+                                _c(
+                                  "Button",
+                                  {
+                                    attrs: { type: "info", size: "small" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.editCategory(category)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Edit")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "Button",
+                                  {
+                                    attrs: { type: "error", size: "small" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.showdeleteModal(category)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Delete")]
+                                )
+                              ],
+                              1
+                            )
+                          ])
+                        : _vm._e()
+                    })
+                  ],
+                  2
+                )
+              ])
             ]
           ),
           _vm._v(" "),
@@ -85051,7 +85257,6 @@ var render = function() {
             },
             [
               _c("Input", {
-                staticStyle: { "margin-bottom": "10px" },
                 attrs: { placeholder: "Enter category name..." },
                 model: {
                   value: _vm.data.categoryName,
@@ -85132,9 +85337,14 @@ var render = function() {
                         type: "primary",
                         disabled: _vm.isAdding,
                         loading: _vm.isAdding
-                      }
+                      },
+                      on: { click: _vm.addCategory }
                     },
-                    [_vm._v(_vm._s(_vm.isAdding ? "Adding..." : "Add tag"))]
+                    [
+                      _vm._v(
+                        _vm._s(_vm.isAdding ? "Adding..." : "Add Category")
+                      )
+                    ]
                   ),
                   _vm._v(" "),
                   _c(
@@ -85154,7 +85364,11 @@ var render = function() {
                         loading: _vm.isAdding
                       }
                     },
-                    [_vm._v(_vm._s(_vm.isAdding ? "Adding..." : "Update tag"))]
+                    [
+                      _vm._v(
+                        _vm._s(_vm.isAdding ? "Adding..." : "Update Category")
+                      )
+                    ]
                   )
                 ],
                 1
@@ -85173,18 +85387,16 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "_overflow _table_div" }, [
-      _c("table", { staticClass: "_table" }, [
-        _c("tr", [
-          _c("th", [_vm._v("ID")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Category Name")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Category Icon")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Action")])
-        ])
-      ])
+    return _c("tr", [
+      _c("th", [_vm._v("ID")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Category Name")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Category Icon Image")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Created at")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Action")])
     ])
   }
 ]
