@@ -43,30 +43,36 @@
                    >
                     <Input v-model="data.categoryName" placeholder="Enter category name..."/>
                     <div class="space"></div>
-                    <Upload type="drag" 
+                    <Upload type="drag"
                     action="api/upload"
                     :headers="{'x-csrf-token' : token, 'X-Requested-With' : 'XMLHttpRequest'}"
                     :on-success="handleSuccess"
                     :on-error="handleError"
-                    :on-remove="handleList"
+                    v-show="data.iconImage==''"
+                    ref="uploads"
+                    :show-upload-list="true"
                     >
                         <div style="padding: 20px 0">
                             <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
                             <p>Click or drag files here to upload</p>
                         </div>
                     </Upload>
-                    <div class="image_thumb" v-if="data.iconImage">
-                        <img :src="`/storage/uploads/${data.iconImage}`">
+                    <div class="demo-upload-list" v-if="data.iconImage">
+                        
+                        <img :src="`storage/uploads/${data.iconImage}`">
+                        <div class="demo-upload-list-cover">
+                            <!-- <Icon type="ios-eye-outline" @click.native="handleView"></Icon> -->
+                            <Icon type="ios-trash-outline" @click="deleteImage"></Icon>
+                        </div>
+                    
                     </div>
 
                     <div slot="footer">
                         <Button type="default" @click="closeModal">Close</Button>
                         <Button v-show="!editmode" @click="addCategory" type="primary" :disabled="isAdding" :loading="isAdding">{{ isAdding ? 'Adding...': 'Add Category'}}</Button>
-                        <Button v-show="editmode" type="primary" :disabled="isAdding" :loading="isAdding">{{ isAdding ? 'Adding...': 'Update Category'}}</Button>
+                        <Button v-show="editmode" @click="updateCategory" type="primary" :disabled="isAdding" :loading="isAdding">{{ isAdding ? 'updating...': 'Update Category'}}</Button>
                     </div>
                 </Modal>
-
-
 			</div>
         </div>
     </div>
@@ -102,12 +108,12 @@ export default {
                 this.$Loading.error();
                 this.isAdding = false
                 if (res.data.errors.categoryName) {
-                    this.error(res.data.errors.categoryName[0])    
+                    this.error(res.data.errors.categoryName[0])
                 }
                 if (res.data.errors.iconImage) {
                     this.error(res.data.errors.iconImage[0])
                 }
-                
+
             }
         },
         async fetchCategory(){
@@ -121,13 +127,32 @@ export default {
         async editCategory(category){
             this.editmode = true
             this.data = {
+                id:category.id,
                 categoryName:category.categoryName,
                 iconImage: category.iconImage
             }
             this.addModal = true
+
+        },
+        async updateCategory(){
+            console.log(this.data.id)
+            this.$Loading.start();
+            const res = await this.callApi('put', 'api/update-category/'+this.data.id, this.data)
+            if(res.status ===200){
+                this.$Loading.finish();
+                this.$emit('afterUpdate')
+                this.success('Category has been updated successfully')
+                this.closeModal()
+            } else {
+                this.swr()
+            }
         },
         closeModal(){
             this.addModal = false
+            this.data.categoryName = ''
+            this.data.iconImage = ''
+            this.editmode = false
+            this.$refs.uploads.clearFiles()
         },
         handleSuccess (res, file) {
             this.data.iconImage = res
@@ -138,9 +163,10 @@ export default {
                 desc: `${file.errors.file.length ? file.errors.file[0] : 'Something went wrong!'}`
             });
         },
-        async handleList(){
+        async deleteImage(){
             let image = this.data.iconImage
             this.data.iconImage = ''
+            this.$refs.uploads.clearFiles()
             const res = await this.callApi('post', 'api/delete-image', {imageName:image})
         }
     },
@@ -148,6 +174,9 @@ export default {
          this.token = window.Laravel.csrfToken
          this.fetchCategory();
          this.$on('afterCreate', () => {
+            this.fetchCategory();
+         })
+         this.$on('afterUpdate', () => {
             this.fetchCategory();
          })
     }

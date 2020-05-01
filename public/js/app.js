@@ -2065,6 +2065,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2169,6 +2175,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 _this3.editmode = true;
                 _this3.data = {
+                  id: category.id,
                   categoryName: category.categoryName,
                   iconImage: category.iconImage
                 };
@@ -2182,8 +2189,51 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee3);
       }))();
     },
+    updateCategory: function updateCategory() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+        var res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                console.log(_this4.data.id);
+
+                _this4.$Loading.start();
+
+                _context4.next = 4;
+                return _this4.callApi('put', 'api/update-category/' + _this4.data.id, _this4.data);
+
+              case 4:
+                res = _context4.sent;
+
+                if (res.status === 200) {
+                  _this4.$Loading.finish();
+
+                  _this4.$emit('afterUpdate');
+
+                  _this4.success('Category has been updated successfully');
+
+                  _this4.closeModal();
+                } else {
+                  _this4.swr();
+                }
+
+              case 6:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
     closeModal: function closeModal() {
       this.addModal = false;
+      this.data.categoryName = '';
+      this.data.iconImage = '';
+      this.editmode = false;
+      this.$refs.uploads.clearFiles();
     },
     handleSuccess: function handleSuccess(res, file) {
       this.data.iconImage = res;
@@ -2194,56 +2244,63 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         desc: "".concat(file.errors.file.length ? file.errors.file[0] : 'Something went wrong!')
       });
     },
-    handleList: function handleList() {
-      var _this4 = this;
+    deleteImage: function deleteImage() {
+      var _this5 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
         var image, res;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                image = _this4.data.iconImage;
-                _this4.data.iconImage = '';
-                _context4.next = 4;
-                return _this4.callApi('post', 'api/delete-image', {
+                image = _this5.data.iconImage;
+                _this5.data.iconImage = '';
+
+                _this5.$refs.uploads.clearFiles();
+
+                _context5.next = 5;
+                return _this5.callApi('post', 'api/delete-image', {
                   imageName: image
                 });
 
-              case 4:
-                res = _context4.sent;
-
               case 5:
+                res = _context5.sent;
+
+              case 6:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4);
+        }, _callee5);
       }))();
     }
   },
   created: function created() {
-    var _this5 = this;
+    var _this6 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
-              _this5.token = window.Laravel.csrfToken;
+              _this6.token = window.Laravel.csrfToken;
 
-              _this5.fetchCategory();
+              _this6.fetchCategory();
 
-              _this5.$on('afterCreate', function () {
-                _this5.fetchCategory();
+              _this6.$on('afterCreate', function () {
+                _this6.fetchCategory();
               });
 
-            case 3:
+              _this6.$on('afterUpdate', function () {
+                _this6.fetchCategory();
+              });
+
+            case 4:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
         }
-      }, _callee5);
+      }, _callee6);
     }))();
   }
 });
@@ -85272,6 +85329,15 @@ var render = function() {
               _c(
                 "Upload",
                 {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.data.iconImage == "",
+                      expression: "data.iconImage==''"
+                    }
+                  ],
+                  ref: "uploads",
                   attrs: {
                     type: "drag",
                     action: "api/upload",
@@ -85281,7 +85347,7 @@ var render = function() {
                     },
                     "on-success": _vm.handleSuccess,
                     "on-error": _vm.handleError,
-                    "on-remove": _vm.handleList
+                    "show-upload-list": true
                   }
                 },
                 [
@@ -85302,10 +85368,22 @@ var render = function() {
               ),
               _vm._v(" "),
               _vm.data.iconImage
-                ? _c("div", { staticClass: "image_thumb" }, [
+                ? _c("div", { staticClass: "demo-upload-list" }, [
                     _c("img", {
-                      attrs: { src: "/storage/uploads/" + _vm.data.iconImage }
-                    })
+                      attrs: { src: "storage/uploads/" + _vm.data.iconImage }
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "demo-upload-list-cover" },
+                      [
+                        _c("Icon", {
+                          attrs: { type: "ios-trash-outline" },
+                          on: { click: _vm.deleteImage }
+                        })
+                      ],
+                      1
+                    )
                   ])
                 : _vm._e(),
               _vm._v(" "),
@@ -85362,11 +85440,12 @@ var render = function() {
                         type: "primary",
                         disabled: _vm.isAdding,
                         loading: _vm.isAdding
-                      }
+                      },
+                      on: { click: _vm.updateCategory }
                     },
                     [
                       _vm._v(
-                        _vm._s(_vm.isAdding ? "Adding..." : "Update Category")
+                        _vm._s(_vm.isAdding ? "updating..." : "Update Category")
                       )
                     ]
                   )

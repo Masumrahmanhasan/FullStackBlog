@@ -33,6 +33,19 @@ class CategoryController extends Controller
         return $iconImage;
     }
 
+    public function updateCategory(Request $request, $id){
+
+        $request->validate([
+            'iconImage' => 'required',
+            'categoryName' => 'required',
+        ]);
+
+        $data['iconImage']      = $request->iconImage;
+        $data['categoryName']   = $request->categoryName;
+
+        return Category::findOrFail($id)->update($data);
+
+    }
 
     public function deleteImage(Request $request){
     	$filename 	= $request->imageName;

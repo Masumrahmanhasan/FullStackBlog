@@ -108,6 +108,7 @@ export default {
                 tagName:tag.tagName
                 }
             this.addModal = true
+           
         },
         async updateTag(){
             this.$Loading.start();
