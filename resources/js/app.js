@@ -2,12 +2,14 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+import store from './store'
 import ViewUI from 'view-design';
 import 'view-design/dist/styles/iview.css';
 import router from './router'
 Vue.use(ViewUI);
 import common from './common'
 Vue.mixin(common);
+
 
 router.beforeEach((to, from, next) => {
     ViewUI.LoadingBar.start();
@@ -23,5 +25,6 @@ Vue.component('mainapp', require('./components/MainApp.vue').default);
 
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    store
 });

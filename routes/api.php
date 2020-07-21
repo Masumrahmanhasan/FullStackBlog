@@ -30,3 +30,4 @@ Route::post('delete-image', 'CategoryController@deleteImage');
 Route::post('add-category', 'CategoryController@addCategory');
 Route::get('get-categories', 'CategoryController@getCategories');
 Route::put('update-category/{id}', 'CategoryController@updateCategory');
+Route::delete('detele-category/{id}', 'CategoryController@delete');

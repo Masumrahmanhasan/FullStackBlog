@@ -36,8 +36,8 @@ class CategoryController extends Controller
     public function updateCategory(Request $request, $id){
 
         $request->validate([
-            'iconImage' => 'required',
-            'categoryName' => 'required',
+            'iconImage'     => 'required',
+            'categoryName'  => 'required',
         ]);
 
         $data['iconImage']      = $request->iconImage;
@@ -60,5 +60,13 @@ class CategoryController extends Controller
     		@unlink($path);
     	}
     	return;
+    }
+
+    public function delete($id)
+    {   
+    
+        $filename   = Category::find($id)->iconImage;
+        $this->deleteFileFromServer($filename);
+        return Category::findOrFail($id)->delete();
     }
 }

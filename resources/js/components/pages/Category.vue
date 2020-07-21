@@ -13,16 +13,16 @@
 								<!-- TABLE TITLE -->
 							<tr>
 								<th>ID</th>
-								<th>Category Name</th>
 								<th>Category Icon Image</th>
+								<th>Category Name</th>
                                 <th>Created at</th>
 								<th>Action</th>
 							</tr>
 								<!-- TABLE TITLE -->
                             <tr v-for="(category, index) in categories" :key="index" v-if="categories.length">
                                 <td>{{ index+1 }}</td>
-                                <td>{{ category.categoryName }}</td>
                                 <td class="table_image"><img :src="'storage/uploads/'+category.iconImage" width="40" height="50" alt=""></td>
+                                <td>{{ category.categoryName }}</td>
                                 <td>{{ category.created_at }}</td>
                                 <td>
                                     <Button type="info" size="small" @click="editCategory(category)">Edit</Button>
@@ -73,13 +73,20 @@
                         <Button v-show="editmode" @click="updateCategory" type="primary" :disabled="isAdding" :loading="isAdding">{{ isAdding ? 'updating...': 'Update Category'}}</Button>
                     </div>
                 </Modal>
-			</div>
+
+                <delete-modal></delete-modal>
+			</div>   
         </div>
     </div>
 </template>
 
 <script>
+import DeleteModal from './base/deleteModal'
 export default {
+    components: {
+        DeleteModal
+    },
+
     data(){
         return {
             categories: [],
@@ -135,7 +142,7 @@ export default {
 
         },
         async updateCategory(){
-            console.log(this.data.id)
+            
             this.$Loading.start();
             const res = await this.callApi('put', 'api/update-category/'+this.data.id, this.data)
             if(res.status ===200){
@@ -147,6 +154,16 @@ export default {
                 this.swr()
             }
         },
+
+        showdeleteModal(category){
+
+            const deleteModalObj = {
+                    showDeleteModal: true,
+                    url:'api/detele-category/'+category.id,
+                }
+            this.$store.commit('setDeletModalObj', deleteModalObj)
+        },
+
         closeModal(){
             this.addModal = false
             this.data.categoryName = ''
@@ -171,14 +188,14 @@ export default {
         }
     },
     async created(){
-         this.token = window.Laravel.csrfToken
-         this.fetchCategory();
-         this.$on('afterCreate', () => {
+        this.token = window.Laravel.csrfToken
+        this.fetchCategory();
+        this.$on('afterCreate', () => {
             this.fetchCategory();
-         })
-         this.$on('afterUpdate', () => {
+        })
+        this.$on('afterUpdate', () => {
             this.fetchCategory();
-         })
+        })
     }
 }
 </script>
