@@ -1,7 +1,10 @@
 <?php
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,15 +22,22 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 // Tag crud
-Route::post('add-tag', 'TagController@addTag');
-Route::get('get-tag-list', 'TagController@allTag');
-Route::put('update-tag/{id}', 'TagController@updateTag');
-Route::delete('delete-tag/{id}', "TagController@deleteTag");
+Route::post('add-tag', [TagController::class, 'addTag']);
+Route::get('get-tag-list', [TagController::class, 'allTag']);
+Route::put('update-tag/{id}', [TagController::class, 'updateTag']);
+Route::delete('delete-tag/{id}', [TagController::class, 'deleteTag']);
 
 // Category
-Route::post('upload', 'CategoryController@upload');
-Route::post('delete-image', 'CategoryController@deleteImage');
-Route::post('add-category', 'CategoryController@addCategory');
-Route::get('get-categories', 'CategoryController@getCategories');
-Route::put('update-category/{id}', 'CategoryController@updateCategory');
-Route::delete('detele-category/{id}', 'CategoryController@delete');
+	// image upload
+Route::post('upload', [CategoryController::class, 'upload']);
+Route::post('delete-image', [CategoryController::class, 'deleteImage']);
+
+Route::post('add-category', [CategoryController::class, 'addCategory']);
+Route::get('get-categories', [CategoryController::class, 'getCategories']);
+Route::put('update-category/{id}', [CategoryController::class, 'updateCategory']);
+Route::delete('detele-category/{id}', [CategoryController::class, 'delete']);
+
+// Admin user
+
+Route::post('create_user', [AdminController::class, 'createUser']);
+Route::get('get_users', [AdminController::class, 'getUsers']);

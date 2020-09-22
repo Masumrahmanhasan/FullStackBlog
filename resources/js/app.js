@@ -10,6 +10,8 @@ Vue.use(ViewUI);
 import common from './common'
 Vue.mixin(common);
 
+window.bus = new Vue();
+
 
 router.beforeEach((to, from, next) => {
     ViewUI.LoadingBar.start();

@@ -21,7 +21,7 @@
 								<!-- TABLE TITLE -->
                             <tr v-for="(category, index) in categories" :key="index" v-if="categories.length">
                                 <td>{{ index+1 }}</td>
-                                <td class="table_image"><img :src="'storage/uploads/'+category.iconImage" width="40" height="50" alt=""></td>
+                                <td class="table_image"><img :src="'storage/uploads/'+category.iconImage" width="60" height="50" alt=""></td>
                                 <td>{{ category.categoryName }}</td>
                                 <td>{{ category.created_at }}</td>
                                 <td>
@@ -82,6 +82,7 @@
 
 <script>
 import DeleteModal from './base/deleteModal'
+import {mapGetters} from 'vuex'
 export default {
     components: {
         DeleteModal
@@ -196,6 +197,14 @@ export default {
         this.$on('afterUpdate', () => {
             this.fetchCategory();
         })
+        bus.$on('afterDelete', () => {
+            this.fetchCategory();
+        })
+
+        var vm = this
+        this.$store.watch(() => this.$store.getters['getDeleteModal'], (value) => {
+            bus.$emit('afterDelete')
+        });
     }
 }
 </script>

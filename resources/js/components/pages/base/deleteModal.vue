@@ -3,7 +3,8 @@
 
 		<Modal
 				:value="getDeleteModal.showDeleteModal"
-				width="360">
+				width="360"
+				@on-cancel="closeModal">
 		    <p slot="header" style="color:#f60;text-align:center">
 		        <Icon type="ios-information-circle"></Icon>
 		        <span>Delete confirmation</span>
@@ -14,7 +15,8 @@
 		    </div>
 
 		    <div slot="footer">
-		        <Button type="error" size="large" long :loading="isDeleting" @click="deleteTag">Delete</Button>
+		        <Button type="default" size="large" @click="closeModal">Close</Button>
+		        <Button type="error" size="large" :loading="isDeleting" @click="deleteTag">Delete</Button>
 		    </div>
 		</Modal>
 
@@ -41,6 +43,9 @@
 	            } else {
 	                this.swr()
 	            }
+	        },
+	        closeModal(){
+	        	this.$store.commit('setDeleteModal', false)
 	        }
 		},
 
