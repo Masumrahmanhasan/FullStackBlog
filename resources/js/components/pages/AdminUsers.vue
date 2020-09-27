@@ -30,7 +30,7 @@
                                 <td>{{ user.created_at }}</td>
                                 <td>
 
-                                    <Button type="info" size="small" @click="editTag(tag)">Edit</Button>
+                                    <Button type="info" size="small" @click="editUsers(user)">Edit</Button>
                                     <Button type="error" size="small" @click="showdeleteModal(tag)">Delete</Button>
                                 </td>
                             </tr>
@@ -61,7 +61,7 @@
                     <div slot="footer">
                         <Button type="default" @click="closeModal">Close</Button>
                         <Button v-show="!editmode" type="primary" @click="addAdmin" :disabled="isAdding" :loading="isAdding">{{ isAdding ? 'Adding...': 'Add Admin'}}</Button>
-                        <Button v-show="editmode" type="primary" @click="updateTag" :disabled="isAdding" :loading="isAdding">{{ isAdding ? 'Adding...': 'Update tag'}}</Button>
+                        <Button v-show="editmode" type="primary" @click="updateAdmin" :disabled="isAdding" :loading="isAdding">{{ isAdding ? 'Adding...': 'Update Admin'}}</Button>
                     </div>
                 </Modal>
 
@@ -111,7 +111,7 @@ export default {
                 this.$Loading.finish();
                 this.isAdding = false
                 this.$emit('afterCreate')
-                this.success('Tag name has been added successfully')
+                this.success('User Created successfully')
                 this.closeModal();
             } else {
                 this.$Loading.error();
@@ -122,22 +122,24 @@ export default {
                 this.isAdding = false
             }
         },
-        async editTag(tag){
+        async editUsers(user){
             this.editmode = true
             this.data = {
-                id:tag.id,
-                tagName:tag.tagName
+                    id:user.id,
+                    fullName:user.fullName,
+                    email:user.email,
+                    userType:user.userType,
                 }
             this.addModal = true
            
         },
-        async updateTag(){
+        async updateAdmin(){
             this.$Loading.start();
-            const res = await this.callApi('put', 'api/update-tag/'+this.data.id, this.data)
+            const res = await this.callApi('post', 'api/update-user', this.data)
             if(res.status ===200){
                 this.$Loading.finish();
                 this.$emit('afterUpdate')
-                this.success('Tag name has been updated successfully')
+                this.success('User updated successfully')
                 this.closeModal()
             } else {
                 this.swr()
@@ -166,7 +168,11 @@ export default {
         async closeModal(){
             this.addModal = false
             this.editmode = false
-            this.data.tagName = ''
+            this.data.fullName = ''
+            this.data.email = ''
+            this.data.password = ''
+            this.data.userType = 'Admin'
+
         },
         async fetchUsers(){
             const res = await this.callApi('get', 'api/get_users')

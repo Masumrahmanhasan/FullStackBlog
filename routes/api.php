@@ -1,10 +1,10 @@
 <?php
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\AdminController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,3 +41,9 @@ Route::delete('detele-category/{id}', [CategoryController::class, 'delete']);
 
 Route::post('create_user', [AdminController::class, 'createUser']);
 Route::get('get_users', [AdminController::class, 'getUsers']);
+Route::post('update-user', [AdminController::class, 'update']);
+
+
+//Login 
+
+Route::post('admin_login',[AuthController::class, 'login']);
