@@ -115,7 +115,6 @@ export default {
                 this.closeModal();
             } else {
                 this.$Loading.error();
-                console.log(res.data.errors);
                 for(let i in res.data.errors){
                     this.error(res.data.errors[i][0])
                 }

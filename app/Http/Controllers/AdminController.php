@@ -4,9 +4,30 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+	public function index(Request $request)
+	{
+		// first check if you are loggedin and admin user ...
+        if (!Auth::check() && $request->path() != 'login') {
+            return redirect('/login');
+        }
+
+        if (!Auth::check() && $request->path() == 'login') {
+            return view('welcome');
+        }
+        // you are already logged in... so check for if you are an admin user..
+        $user = Auth::user();
+        if ($user->userType == 'User') {
+            return redirect('login');
+        }
+        if ($request->path() == 'login') {
+            return redirect('/');
+        }
+		return view('welcome');
+	}
  	public function createUser(Request $request)
  	{
  		$request->validate([
@@ -55,4 +76,5 @@ class AdminController extends Controller
 
  		return $user;
  	}
+
 }

@@ -9,13 +9,14 @@ export default new Vuex.Store({
   		showDeleteModal: false,
   		url:'',
   		isDeleted : false,
-  	}
+  	},
+    user: false,
   },
 
   getters:{
   	getDeleteModal(state){
   		return state.deleteModalObj
-  	}
+  	},
   },
 
   mutations:{
@@ -25,7 +26,10 @@ export default new Vuex.Store({
   	setDeleteModal(state, data){
   		state.deleteModalObj.showDeleteModal = false
   		state.deleteModalObj.isDeleted = data
-  	}
+  	},
+    updateUser(state, data){
+      state.user = data
+    }
   },
 
   actions: {

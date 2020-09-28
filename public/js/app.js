@@ -1981,10 +1981,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['user'],
   data: function data() {
     return {
       isLoggedIn: false
     };
+  },
+  created: function created() {
+    this.$store.commit('updateUser', this.user);
   }
 });
 
@@ -2141,8 +2145,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this.closeModal();
                 } else {
                   _this.$Loading.error();
-
-                  console.log(res.data.errors);
 
                   for (i in res.data.errors) {
                     _this.error(res.data.errors[i][0]);
@@ -2940,12 +2942,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var res;
+        var res, i;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                console.log('nothing');
+                _this.isLogging = true;
                 _context.next = 3;
                 return _this.callApi('post', 'api/admin_login', _this.data);
 
@@ -2954,17 +2956,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 if (res.status === 200) {
                   _this.success(res.data.msg);
-
-                  _this.isLogging = true;
                 } else {
                   if (res.status === 401) {
                     _this.info(res.data.msg);
                   } else {
-                    _this.swr();
+                    for (i in res.data.errors) {
+                      _this.error(res.data.errors[i][0]);
+                    }
                   }
                 }
 
-              case 5:
+                _this.isLogging = false;
+
+              case 6:
               case "end":
                 return _context.stop();
             }
@@ -85993,7 +85997,7 @@ var render = function() {
   return _c(
     "div",
     [
-      _vm.isLoggedIn
+      _vm.$store.state.user
         ? _c("div", [
             _c("div", { staticClass: "_1side_menu" }, [
               _vm._m(0),
@@ -104220,7 +104224,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee, null, [[0, 6]]);
       }))();
     },
-    info: function info(title, desc) {
+    info: function info(desc) {
+      var title = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "Hey!";
       this.$Notice.info({
         title: title,
         desc: desc
@@ -104777,7 +104782,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_pages_Tags__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/pages/Tags */ "./resources/js/components/pages/Tags.vue");
 /* harmony import */ var _components_pages_Category__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/pages/Category */ "./resources/js/components/pages/Category.vue");
 /* harmony import */ var _components_pages_AdminUsers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/pages/AdminUsers */ "./resources/js/components/pages/AdminUsers.vue");
-/* harmony import */ var _components_pages_Login__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/pages/Login */ "./resources/js/components/pages/Login.vue");
+/* harmony import */ var _components_pages_Login__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/pages/Login */ "./resources/js/components/pages/Login.vue");
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
@@ -104800,7 +104805,7 @@ var routes = [{
   component: _components_pages_AdminUsers__WEBPACK_IMPORTED_MODULE_5__["default"]
 }, {
   path: '/login',
-  component: _components_pages_Login__WEBPACK_IMPORTED_MODULE_7__["default"]
+  component: _components_pages_Login__WEBPACK_IMPORTED_MODULE_6__["default"]
 }];
 /* harmony default export */ __webpack_exports__["default"] = (new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'history',
@@ -104830,7 +104835,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
       showDeleteModal: false,
       url: '',
       isDeleted: false
-    }
+    },
+    user: false
   },
   getters: {
     getDeleteModal: function getDeleteModal(state) {
@@ -104844,6 +104850,9 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     setDeleteModal: function setDeleteModal(state, data) {
       state.deleteModalObj.showDeleteModal = false;
       state.deleteModalObj.isDeleted = data;
+    },
+    updateUser: function updateUser(state, data) {
+      state.user = data;
     }
   },
   actions: {}

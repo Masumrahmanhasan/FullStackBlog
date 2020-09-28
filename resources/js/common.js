@@ -16,7 +16,7 @@ export default {
                     return error.response
                 }
             },
-            info (title, desc) {
+            info (desc, title="Hey!") {
                 this.$Notice.info({
                     title: title,
                     desc: desc

@@ -37,18 +37,22 @@ export default {
   	},
 	methods:{
     	async login(){
-    		console.log('nothing');
+            this.isLogging = true
     		const res = await this.callApi('post', 'api/admin_login', this.data)
     		if(res.status === 200){
     			this.success(res.data.msg)
-    			this.isLogging = true
+    			
     		} else {
     			if (res.status === 401) {
     				this.info(res.data.msg)
     			} else {
-    				this.swr()
+                    for(let i in res.data.errors)
+                    {
+                        this.error(res.data.errors[i][0])
+                    }
     			}
     		}
+            this.isLogging = false
     	}
     }
 }

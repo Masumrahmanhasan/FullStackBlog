@@ -10,20 +10,35 @@ class AuthController extends Controller
     public function login(Request $request)
     {
     	$request->validate([
-    		'email' 	=> 'required',
+    		'email' 	=> 'bail|required|email',
     		'password' 	=> 'required'
     	]);
 
     	$email 		= $request->email;
     	$password 	= $request->password;
     	if (Auth::attempt(['email' => $email, 'password' => $password])) {
+
+            $user = Auth::user();
+            if ($user->userType == 'User') {
+                Auth::logout();
+                return response()->json([
+                    'msg' => 'You do not have the permission!'
+                ], 401);
+            }
     		return response()->json([
-    			'msg' => 'You are logged in'
+    			'msg' => 'You are logged in',
+                'user' => $user,
     		]);
     	} else {
     		return response()->json([
     			'msg' => 'Invalid caredentials'
-    		]);
+    		], 401);
     	}
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/login');
     }
 }
