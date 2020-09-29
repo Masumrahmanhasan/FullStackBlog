@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Tag crud
-Route::group(['prefix' => 'api'], function() {
+Route::group(['middleware' => ['protect'], 'prefix' => 'api'], function() {
     
 	Route::post('/add-tag', [TagController::class, 'addTag']);
 	Route::get('/get-tag-list', [TagController::class, 'allTag']);
@@ -36,16 +37,17 @@ Route::group(['prefix' => 'api'], function() {
 	Route::delete('/detele-category/{id}', [CategoryController::class, 'delete']);
 
 	// Admin user
-
 	Route::post('/create_user', [AdminController::class, 'createUser']);
 	Route::get('/get_users', [AdminController::class, 'getUsers']);
 	Route::post('/update-user', [AdminController::class, 'update']);
 
+	Route::get('/get_roles', [RoleController::class, 'index']);
+	Route::post('/create_role', [RoleController::class, 'store']);
 
 	//Login 
 	Route::post('/admin_login',[AuthController::class, 'login']);
-	Route::get('/logout', [AuthController::class, 'logout']);
+	
 });
-
+Route::get('/logout', [AuthController::class, 'logout']);
 Route::get('/', 'AdminController@index');
 Route::any('{slug}', 'AdminController@index');

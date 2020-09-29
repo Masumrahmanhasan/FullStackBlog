@@ -22,14 +22,22 @@
                             <router-link to="/"><Icon type="ios-speedometer" /> Dashboard</router-link>
                         </li>
                         <li>
-                            <router-link to="tags"><Icon type="ios-speedometer" /> Tags</router-link>
+                            <router-link to="tags"><Icon type="md-pricetags" /> Tags</router-link>
                         </li>
                         <li>
-                            <router-link to="category"><Icon type="ios-speedometer" /> Category</router-link>
+                            <router-link to="category"><Icon type="md-analytics" /> Category</router-link>
                         </li>
 
                         <li>
-                            <router-link to="adminusers"><Icon type="ios-speedometer" /> Admin Users</router-link>
+                            <router-link to="adminusers"><Icon type="ios-people" /> Admin Users</router-link>
+                        </li>
+
+                        <li>
+                            <router-link to="role"><Icon type="ios-clipboard" /> Role Management</router-link>
+                        </li>
+
+                        <li>
+                            <a href="/logout"><Icon type="ios-log-out" /> Logout</a>
                         </li>
                     </ul>
                 </div>

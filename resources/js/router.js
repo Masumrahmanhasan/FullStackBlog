@@ -7,6 +7,8 @@ import tags from './components/pages/Tags'
 import category from './components/pages/Category'
 import adminusers from './components/pages/AdminUsers'
 import login from './components/pages/Login'
+import role from './components/pages/Role'
+
 const routes = [
     {
         path: '/',
@@ -23,6 +25,10 @@ const routes = [
     {
         path:'/adminusers',
         component:adminusers,
+    },
+    {
+        path:'/role',
+        component:role,
     },
     {
         path:'/login',
